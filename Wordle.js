@@ -46,10 +46,8 @@ squares.forEach(element => {
 
         if(rightIndex.length == wordArray.length){
             resultElement.innerHTML = `
-            <div class="result">
             <p>You Win!</p>
             <button class="button">Restart</button>
-            </div>
         `
         }
 
