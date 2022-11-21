@@ -1,3 +1,5 @@
+let resultElement = querySelector('.result')
+
 let word = 'texto';
 let wordArray = word.toUpperCase().split('');
 console.log(wordArray)
@@ -40,6 +42,17 @@ squares.forEach(element => {
            rightIndex.forEach(element => {
             squares[element].classList.add('green');
            })
+        //    Si los arreglos son iguales
+
+        if(rightIndex.length == wordArray.length){
+            resultElement.innerHTML = `
+            <div class="result">
+            <p>You Win!</p>
+            <button class="button">Restart</button>
+            </div>
+        `
+        }
+
         //    Crear una nueva linea 
         }
     });
