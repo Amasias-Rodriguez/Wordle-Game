@@ -1,7 +1,25 @@
-let resultElement = querySelector('.result');
+let resultElement = document.querySelector('.result');
 let mainContainer = document.querySelector('.main-container')
 let rowId = 1;
+
+
 //Peticion API
+
+const options = {
+	method: 'GET',
+	headers: {
+		'X-RapidAPI-Key': 'f3cdceacf6msh71c0e4cff5be441p15ed62jsnf06564818a72',
+		'X-RapidAPI-Host': '1000-most-common-words.p.rapidapi.com'
+	}
+};
+
+fetch('https://1000-most-common-words.p.rapidapi.com/words/spanish?words_limit=1', options)
+.then(result => console.log(result.json()))
+
+
+
+
+
 let word = 'texto';
 let wordArray = word.toUpperCase().split('');
 console.log(wordArray)
