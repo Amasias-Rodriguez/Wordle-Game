@@ -1,80 +1,87 @@
-// let resultElement = querySelector('.result');
+let resultElement = querySelector('.result');
 let mainContainer = document.querySelector('.main-container')
 let rowId = 1;
-
+//Peticion API
 let word = 'texto';
 let wordArray = word.toUpperCase().split('');
 console.log(wordArray)
 
-let actualRow = document.querySelector('.row');
+let actualRow = document.querySelector('.row')
 
 
 
-wordArray.forEach((item, index) => {
-    if(index === 0){
-        actualRow.innerHTML += `<input type="text" maxlength="1" class="square focus">`
-    }else{
-        actualRow.innerHTML += `<input type="text" maxlength="1" class="square">`
-    }
-});
+drawSquares(actualRow);
+listenInput(actualRow)
+addFocus(actualRow)
 
-let focusElement = document.querySelector('.focus')
-console.log(focusElement)
-focusElement.focus();
-
-let squares = document.querySelectorAll('.square');
-squares = [...squares];
+function listenInput(actualRow){
+    let squares = actualRow.querySelectorAll('.square');
+    squares = [...squares];
 
 
-let userInput = []
+    let userInput = []
 
-squares.forEach(element => {
+    squares.forEach(element => {
     element.addEventListener('input', event=>{
-        //Recoger el ingreso del usuario
+        //Si no se ha borrado
+        if(event.inputType !== 'deleteContentBackward'){
+            //Recoger el ingreso del usuario
         userInput.push(event.target.value.toUpperCase())
         console.log(userInput)
         if(event.target.nextElementSibling){
             event.target.nextElementSibling.focus();
         }else{
+            //Crear arreglo con las letras
+            let squaresFilled = actualRow.querySelectorAll('.square');
+            squaresFilled = [...squaresFilled]
+            let lastFiveSquaresFilled = squaresFilled.slice(-5);
+            let finalUserInput = [];
+            lastFiveSquaresFilled.forEach(element => {
+                finalUserInput.push(element.value.toUpperCase)
+            });
+
 
             // Cambiar estilos si existe la letra pero no esta en la posicion correcta 
-            let existIndexArray = existLetter(wordArray, userInput)
+            let existIndexArray = existLetter(wordArray, finalUserInput)
             console.log(existIndexArray)
              existIndexArray.forEach(element =>{
                 squares[element].classList.add('gold');
             });
 
             // Comparar arreglos para cambiar estilos
-           let rightIndex =  compareArrays(wordArray, userInput)
+           let rightIndex =  compareArrays(wordArray, finalUserInput)
            console.log(rightIndex)
            rightIndex.forEach(element => {
             squares[element].classList.add('green');
            })
+
+
         //    Si los arreglos son iguales
 
         if(rightIndex.length == wordArray.length){
-            resultElement.innerHTML = `
-            <p>You Win!</p>
-            <button class="button">Restart</button>`
+            showResult('You Win!')
+
+            return;
         }
 
         // Crear una nueva linea
-        
-
-        // let resetBtn = document.querySelector('.button')
-        // resetBtn.addEventListener('click', ()=>{
-        //     location.reload();
-        // });
-
-
-        // Crear una linea
         let actualRow = createRow()
+        if(!actualRow){
+            return
+        }
         drawSquares(actualRow)
-
+        listenInput(actualRow)
+        addFocus(actualRow)
 
         }
+        }else{
+            userInput.pop();
+        }
+        console.log(userInput)
     });
 })
+}
+
 
 
 //Funciones
@@ -104,11 +111,16 @@ function existLetter(array1, array2){
 
 function createRow(){
     rowId++
-    let newRow = document.createElement('div');
-    newRow.classList.add('row');
-    newRow.setAttribute('id', 'rowId')
-    mainContainer.appendChild(newRow)
-    return newRow;
+    if (!rowId <= 5){
+        let newRow = document.createElement('div');
+        newRow.classList.add('row');
+        newRow.setAttribute('id', 'rowId')
+        mainContainer.appendChild(newRow)
+        return newRow;  
+    }else{
+        showResult('Try Again')
+    }
+    
 }
 
 function drawSquares(actualRow){
@@ -118,5 +130,22 @@ function drawSquares(actualRow){
         }else{
             actualRow.innerHTML += `<input type="text" maxlength="1" class="square">`
         }
+    });
+}
+
+function addFocus(actualRow){
+    let focusElement = actualRow.querySelector('.focus')
+    console.log(focusElement)
+    focusElement.focus();
+}
+
+function showResult(textMsg){
+    resultElement.innerHTML = `
+    <p>${textMsg}</p>
+    <button class="button">Restart</button>`
+
+    let resetBtn = document.querySelector('.button')
+    resetBtn.addEventListener('click', ()=>{
+        location.reload();
     });
 }
